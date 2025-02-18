@@ -7,7 +7,7 @@ import os
 from collections import Counter
 from sklearn.preprocessing import QuantileTransformer
 
-# Set directories and file paths
+# Set directory and file names
 base_dir = ""
 sample_list_file = ""
 dict_info_files = {"TCR": "", "BCR": ""}

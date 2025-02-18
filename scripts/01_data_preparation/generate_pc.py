@@ -8,7 +8,7 @@ from scipy.stats import zscore
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import QuantileTransformer
 
-# Set base directory
+# Set directory and file names
 base_dir = ""
 sample_list = ""
 dict_info_files = {"TCR": "", "BCR": ""}
