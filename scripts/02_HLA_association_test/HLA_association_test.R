@@ -26,16 +26,16 @@ samples <- scan(sample_list,
                 what = character())
 num_sample <- length(samples)
 
-dose <- read.delim(dosage_file, sep = "\t")
-dose <- dose[, c("X0", "ref", "alt", samples)]
-info_geno <- dose[, 1:3]
-geno <- dose[, 4:(3 + length(samples))]
-num_geno <- nrow(geno)
+dosage <- read.delim(dosage_file, sep = "\t")
+dosage <- dosage[, c("X0", "ref", "alt", samples)]
+info_genotypes <- dosage[, 1:3]
+genotypes <- dosage[, 4:(3 + length(samples))]
+num_genotypes <- nrow(genotypes)
 
-is_classicalHLA <- substr(info_geno[, 1], 1, 5) %in% paste("HLA_", c("A", "B", "C"), sep = "") |
-  substr(info_geno[, 1], 1, 8) %in% paste("HLA_", c("DRB1", "DPB1", "DPA1", "DQB1", "DQA1"), sep = "")
-is_classicalAA <- substr(info_geno[, 1], 1, 4) %in% paste("AA_", c("A", "B", "C"), sep = "") |
-  substr(info_geno[, 1], 1, 7) %in% paste("AA_", c("DRB1", "DPB1", "DPA1", "DQB1", "DQA1"), sep = "")
+is_classicalHLA <- substr(info_genotypes[, 1], 1, 5) %in% paste("HLA_", c("A", "B", "C"), sep = "") |
+  substr(info_genotypes[, 1], 1, 8) %in% paste("HLA_", c("DRB1", "DPB1", "DPA1", "DQB1", "DQA1"), sep = "")
+is_classicalAA <- substr(info_genotypes[, 1], 1, 4) %in% paste("AA_", c("A", "B", "C"), sep = "") |
+  substr(info_genotypes[, 1], 1, 7) %in% paste("AA_", c("DRB1", "DPB1", "DPA1", "DQB1", "DQA1"), sep = "")
 is_classical <- is_classicalHLA | is_classicalAA
 index_test <- which(is_classical)
 
@@ -80,19 +80,19 @@ dds_est <- estimateDispersionsGeneEst(dds_est)
 dispersions(dds_est) <- mcols(dds_est)$dispGeneEst
 
 for (j in index_test) {
-  name_variant <- gsub(":", "_", as.character(info_geno[j, 1]))
+  name_variant <- gsub(":", "_", as.character(info_genotypes[j, 1]))
   name_file <- paste("usage.deseq2", prefix, test, name_variant, "result.txt", sep = ".")
   if (file.exists(paste0(name_file, ".gz"))) next
   
-  df <- cbind(covar, t(geno[j,]))
+  df <- cbind(covar, t(genotypes[j,]))
   colnames(df)[ncol(df)] <- "variant"
-  df$variant <- as.numeric(unlist(t(geno[j, ])))
+  df$variant <- as.numeric(unlist(t(genotypes[j, ])))
 
   if (var(df$variant[include]) == 0) next  # Skip if no variation
 
-  if (info_geno[j, 2] == "A") {
+  if (info_genotypes[j, 2] == "A") {
     dds_est$variant <- 2 - df$variant[include]
-  } else if (info_geno[j, 2] == "P") {
+  } else if (info_genotypes[j, 2] == "P") {
     dds_est$variant <- df$variant[include]
   }
   run_wald <- try(nbinomWaldTest(dds_est), silent = FALSE)
