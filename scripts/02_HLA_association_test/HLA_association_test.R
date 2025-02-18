@@ -3,7 +3,7 @@ library(tidyverse)
 library(knitr)
 library(stringr)
 
-# Set working directory
+# Set directory and file names
 base_dir <- ""
 sample_list <- ""
 dosage_file <- ""
