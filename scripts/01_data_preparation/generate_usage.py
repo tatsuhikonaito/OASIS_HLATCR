@@ -87,7 +87,7 @@ for cell in cells:
                     usage["end"] = usage["start"] + 1
                     usage["ID"] = usage.index.str.replace("*", "_")
 
-                    output_filename = f"phenotypes/{cell}.{gene}.qc.functional.{weight_method}.{full}.{celltype}.{adjust}.bed.gz"
+                    output_filename = f"phenotypes/usage.{cell}.{gene}.qc.functional.{weight_method}.{full}.{celltype}.{adjust}.bed.gz"
                     usage.to_csv(output_filename, sep="\t", header=True, index=False)
 
                     # For Plink

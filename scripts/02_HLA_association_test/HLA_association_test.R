@@ -8,7 +8,6 @@ base_dir <- ""
 sample_list <- ""
 dosage_file <- ""
 covariate_file <- ""
-
 setwd(base_dir)
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -81,7 +80,7 @@ dispersions(dds_est) <- mcols(dds_est)$dispGeneEst
 
 for (j in index_test) {
   name_variant <- gsub(":", "_", as.character(info_genotypes[j, 1]))
-  name_file <- paste("usage.deseq2", prefix, test, name_variant, "result.txt", sep = ".")
+  name_file <- file.path(name_dir, paste("usage.deseq2", prefix, test, name_variant, "result.txt.gz", sep = "."))
   if (file.exists(paste0(name_file, ".gz"))) next
   
   df <- cbind(covar, t(genotypes[j,]))
@@ -104,7 +103,7 @@ for (j in index_test) {
   } else if (test == "int") {
     res <- results(dds_est, name = "case.variant")
   }
-  write.table(res, file = file.path(name_dir, name_file),
+  write.table(res, file = gzfile(name_file),
               row.names = TRUE, col.names = TRUE, sep = "\t", quote = FALSE)
   system(paste("gzip -f", file.path(name_dir, name_file)))
 }
