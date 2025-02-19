@@ -48,19 +48,20 @@ rownames(exp) <- exp$ID
 info_tcr <- exp[, 4]
 exp <- exp[, samples]
 num_exp <- nrow(exp)
-include <- !is.na(covar$Status) & !is.na(covar$PC1_g)
-include <- include & complete.cases(t(exp))
 covar["case"] <- covar["Status"]
+include <- !is.na(covar$case) & !is.na(covar$PC1_g)
+include <- include & complete.cases(t(exp))
 num_case <- sum(covar$case == 1)
 
-include <- !is.na(covar$case) & !is.na(covar$PC1_g)
 name_dir <- file.path(paste("results_HLAassoc", sep = "."), paste("usage", prefix, test, sep = "."))
 if (!dir.exists(name_dir)) {
   dir.create(name_dir)
 }
 
-df <- cbind(covar, c(rep(0, num_case/2), rep(1, num_case/2), rep(0, (num_sample - num_case)/2), rep(1, (num_sample - num_case)/2)))
-colnames(df)[ncol(df)] <- "variant"
+# Estimate dispersions for a representative variant and fixed normalization factors.
+i <- 5
+df <- cbind(covar, as.numeric(t(geno[i,])))
+colnames(df)[dim(df)[2]] <- "variant"
 
 if (test == "qtl") {
   design_formula <- "~variant+case+Age+Sex+Version+PC1_g+PC2_g"
